@@ -1,0 +1,84 @@
+//@flow
+import { Map } from 'immutable'
+
+//store构造函数参数
+export type StoreOptions = {
+  debug?: boolean;
+  ctxStoreName?: string;
+};
+
+//Immutable State
+export type IState = Map<string, any>;
+
+//当前的Actor的z状态类型
+export type ActorState = Map<string, any>;
+
+//定义redux类型的action
+export type ReduxAction = {
+  type: string;
+};
+
+declare type QueryLang = {
+  id: () => number;
+  name: () => string;
+  lang: () => Object;
+  isValidQuery(ql: QueryLang): boolean;
+};
+
+declare class Actor {
+  defaultState(): Object;
+}
+
+declare class Store {
+  constructor(opts: StoreOptions): void;
+  bindActor(): Array<Actor>;
+  transaction(cb: Function): void;
+  dispatch(msg: string | ReduxAction, param?: any): void;
+  batchDispatch(actions: Array<string | [string, any] | ReduxAction>): void;
+  bigQuery(ql: QueryLang): any;
+  state(): IState;
+}
+
+declare var msg: events$EventEmitter;
+
+declare function QL(
+  name: string,
+  lang: Array<QueryLang | string | Array<string | number> | Function> | QueryLang
+): QueryLang;
+
+declare type DynamicQueryLang = {
+  analyserLang(lang: Array<any>): Array<any>;
+  name(): string;
+  lang(): Array<any>;
+  context(ctx: Object): Object;
+};
+
+declare function DQL(
+  name: string,
+  lang: Array<QueryLang | string | Array<string | number> | Function> | QueryLang
+): DynamicQueryLang;
+
+declare function Action(name: string): Function;
+
+declare function CtxStoreName(name: string): Function;
+
+declare function StoreProvider(
+  store: Store,
+  opts: StoreOptions
+): Function;
+
+declare function Relax(
+  Component: ReactClass<{}>
+): ReactClass<{}>;
+
+export {
+  Actor,
+  Action,
+  CtxStoreName,
+  QL,
+  DQL,
+  Relax,
+  Store,
+  StoreProvider,
+  msg
+};
